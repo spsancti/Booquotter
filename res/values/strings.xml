@@ -2,4 +2,8 @@
 <resources>
     <string name="hello">Hello World, ParseStarterProjectActivity!</string>
     <string name="app_name">Booquotter</string>
+	<string name="twitter_login_cancelled">Login unsuccessful\nCheck your internet connection</string>
+	<string name="twitter_login_successful">You\'ve successfully logged in</string>
+	<string name="twitter_signin_successful">You\'ve successfully signed in</string>
+		
 </resources>
