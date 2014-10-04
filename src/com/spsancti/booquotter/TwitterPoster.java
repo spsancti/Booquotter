@@ -48,6 +48,10 @@ public class TwitterPoster {
 	 * You should call it prior to public void @tweet()
 	 */
 	public void login(){
+		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
+			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
+			return;
+		}
 		ParseTwitterUtils.logIn(context, new LogInCallback() {
 			  @Override
 			  public void done(ParseUser user, ParseException err) {
@@ -59,8 +63,18 @@ public class TwitterPoster {
 			    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
 			    }
 			  }
-			});
-		
+			});		
+	}
+	
+	/*
+	 * Call this whenever you want 
+	 */	
+	public void logout(){
+		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
+			try {
+				ParseTwitterUtils.unlink(ParseUser.getCurrentUser());
+			} catch (ParseException e) {e.printStackTrace();}
+		}
 	}
 	
 	public void postTweet(String text){
@@ -72,7 +86,7 @@ public class TwitterPoster {
 		new makeTweetTask().execute(text);		
 	}
 	
-	private class makeTweetTask extends AsyncTask<String, Void, Boolean>{
+	private class makeTweetTask extends AsyncTask<String, Void, Integer>{
 
 	    public String convertStreamToString(InputStream is)
 	    {
@@ -95,14 +109,14 @@ public class TwitterPoster {
 	    }
 		
 		@Override
-		protected Boolean doInBackground(String... params) {
+		protected Integer doInBackground(String... params) {
 			String text = new String(params[0]);
 			json 		= new ArrayList<NameValuePair>();
 			client  	= new DefaultHttpClient();
 
 			 try {
 				json.add(new BasicNameValuePair("status", text));
-				tweet.setHeader("Content-type", "application/html");//x-www-form-urlencoded");
+				tweet.setHeader("Content-type", "application/x-www-form-urlencoded");
 			    tweet.setEntity(new UrlEncodedFormEntity(json));
 			    
 				ParseTwitterUtils.getTwitter().signRequest(tweet);
@@ -111,12 +125,29 @@ public class TwitterPoster {
 				HttpEntity entity = httpresponse.getEntity();
 				
 				Log.d(TAG, "HM " + convertStreamToString(entity.getContent()));
+
+				return httpresponse.getStatusLine().getStatusCode();
+				
 			    
-			} catch (Exception e) {	e.printStackTrace();}			return null;
+			} catch (Exception e) {	e.printStackTrace();}
+			
+			 return null;
 		}
 
-		protected void onPostExecute(Boolean... params){
-			tweet.abort();
+		protected void onPostExecute(Integer result){
+			try {
+				switch(result){
+					case 200:{
+				    	Toast.makeText(context, R.string.twitter_tweet_successful,  Toast.LENGTH_SHORT).show();
+					}break;
+					
+					case 401:{
+				    	Toast.makeText(context, R.string.twitter_tweet_unauthorized,  Toast.LENGTH_SHORT).show();
+				    	logout();
+				    	login();
+					}break;
+				}
+			} catch(Exception e) { e.printStackTrace();}
 		}
 	}
 }

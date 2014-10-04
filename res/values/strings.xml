@@ -6,5 +6,7 @@
 	<string name="twitter_login_successful">You\'ve successfully logged in</string>
 	<string name="twitter_signin_successful">You\'ve successfully signed in</string>
 	<string name="twitter_already_logged_in">You\'re already logged in</string>
-	
+	<string name="twitter_tweet_successful">Successfully posted into your timeline</string>
+	<string name="twitter_tweet_unauthorized">Your login/password is incorrect\nTry to relogin</string>
+		
 </resources>
