@@ -14,9 +14,9 @@ public class ParseStarterProjectActivity extends Activity {
 
 		TwitterPoster tp = new TwitterPoster(this);
 
-		tp.login();
+		/*tp.login();
 		tp.postTweet("My tweet from application!");
-		
+		*/
 		ParseAnalytics.trackAppOpened(getIntent());
 	}
 }

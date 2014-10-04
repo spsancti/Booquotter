@@ -79,30 +79,20 @@ public class TwitterPoster {
 	        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 	        StringBuilder sb = new StringBuilder();
 	        String line = null;
-	        try
-	        {
-	            while ((line = reader.readLine()) != null)
-	            {
+	        try {
+	            while ((line = reader.readLine()) != null) {
 	                    sb.append(line + "\n");
 	            } 
 	        }
-	        catch (IOException e)
-	        {
-	            e.printStackTrace();
-	        }
-	        finally
-	        {
-	            try
-	            {
+	        catch (IOException e) {e.printStackTrace();}
+	        finally{
+	            try{
 	                is.close();
 	            }
-	            catch (IOException e)
-	            {
-	                e.printStackTrace();
-	            }
+	            catch (IOException e){e.printStackTrace();}
 	        }
 	        return sb.toString();
-	}
+	    }
 		
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -112,7 +102,7 @@ public class TwitterPoster {
 
 			 try {
 				json.add(new BasicNameValuePair("status", text));
-				tweet.setHeader("Content-type", "application/x-www-form-urlencoded");
+				tweet.setHeader("Content-type", "application/html");//x-www-form-urlencoded");
 			    tweet.setEntity(new UrlEncodedFormEntity(json));
 			    
 				ParseTwitterUtils.getTwitter().signRequest(tweet);
