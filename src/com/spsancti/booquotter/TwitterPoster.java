@@ -26,10 +26,10 @@ import com.parse.ParseException;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
-public class TwitterPoster {
+public class TwitterPoster implements SocialPoster{
 	private static String TAG = "TwitterPoster";
 	
-	public 	static String TWITTER_API_KEY 	= "KgrlLNXIvWyzRpzo3sJbDRkgs";
+	public 	static String TWITTER_API_KEY 	 = "KgrlLNXIvWyzRpzo3sJbDRkgs";
 	public 	static String TWITTER_API_SECRET = "OmmcA3RCyyryJHgUAs5bDtKO2cnvIZ3MkKLVh60FvVjKOI34Yz";
 	
 	private Context 	 		context;
@@ -47,6 +47,7 @@ public class TwitterPoster {
 	 * Calls built in activity in parse to open login dialog in twitter
 	 * You should call it prior to public void @tweet()
 	 */
+	@Override
 	public void login(){
 		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
 			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
@@ -69,6 +70,7 @@ public class TwitterPoster {
 	/*
 	 * Call this whenever you want 
 	 */	
+	@Override
 	public void logout(){
 		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
 			try {
@@ -76,8 +78,8 @@ public class TwitterPoster {
 			} catch (ParseException e) {e.printStackTrace();}
 		}
 	}
-	
-	public void postTweet(String text){
+	@Override
+	public void post(String text){
 
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
@@ -126,14 +128,13 @@ public class TwitterPoster {
 				
 				Log.d(TAG, "HM " + convertStreamToString(entity.getContent()));
 
-				return httpresponse.getStatusLine().getStatusCode();
-				
-			    
+				return httpresponse.getStatusLine().getStatusCode();			    
 			} catch (Exception e) {	e.printStackTrace();}
 			
 			 return null;
 		}
-
+		
+//TODO: Add more response codes here
 		protected void onPostExecute(Integer result){
 			try {
 				switch(result){
