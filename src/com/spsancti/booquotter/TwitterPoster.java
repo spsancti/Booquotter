@@ -36,6 +36,7 @@ public class TwitterPoster implements SocialPoster{
 	private HttpClient   		client;
 	private HttpPost	  		tweet;
 	private List<NameValuePair> json;
+	
 	/*
 	 * To make it work you shall pass @Activity, not the @Context
 	 */
@@ -43,9 +44,10 @@ public class TwitterPoster implements SocialPoster{
 		context = c;		
 		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
 	}
+	
 	/*
 	 * Calls built in activity in parse to open login dialog in twitter
-	 * You should call it prior to public void @tweet()
+	 * You must call it prior to public void @post()
 	 */
 	@Override
 	public void login(){
@@ -78,9 +80,12 @@ public class TwitterPoster implements SocialPoster{
 			} catch (ParseException e) {e.printStackTrace();}
 		}
 	}
+	
+	/*
+	 * Call this after login
+	 */
 	@Override
 	public void post(String text){
-
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;
@@ -88,6 +93,9 @@ public class TwitterPoster implements SocialPoster{
 		new makeTweetTask().execute(text);		
 	}
 	
+	/*
+	 * Asynchronous posting, because networking in main thread is forbidden
+	 */
 	private class makeTweetTask extends AsyncTask<String, Void, Integer>{
 
 	    public String convertStreamToString(InputStream is)
@@ -139,11 +147,11 @@ public class TwitterPoster implements SocialPoster{
 			try {
 				switch(result){
 					case 200:{
-				    	Toast.makeText(context, R.string.twitter_tweet_successful,  Toast.LENGTH_SHORT).show();
+				    	Toast.makeText(context, R.string.twitter_tweet_successful,  Toast.LENGTH_LONG).show();
 					}break;
 					
 					case 401:{
-				    	Toast.makeText(context, R.string.twitter_tweet_unauthorized,  Toast.LENGTH_SHORT).show();
+				    	Toast.makeText(context, R.string.twitter_tweet_unauthorized,  Toast.LENGTH_LONG).show();
 				    	logout();
 				    	login();
 					}break;

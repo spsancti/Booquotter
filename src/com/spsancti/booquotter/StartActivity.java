@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
 import com.spsancti.booquotter.R;
 
 public class StartActivity extends Activity {
@@ -15,11 +14,18 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		FacebookPoster tp = new FacebookPoster(this);
+		FacebookPoster fp = new FacebookPoster(this);
+		
+		//fp.logout();
+		fp.login();
+		fp.post("One more post from application!");
+		
+		TwitterPoster tp = new TwitterPoster(this);
 		
 		//tp.logout();
-		tp.login();
-		tp.post("My post from application!");
+		//tp.login();
+		tp.post("One more post from application!");
+		
 		
 		ParseAnalytics.trackAppOpened(getIntent());
 	}
