@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Booquotter</string>
-	
-	<string name="twitter_login_cancelled">Twitter login unsuccessful</string>
-	<string name="twitter_login_successful">You\'ve successfully logged in\nwith Twitter</string>
-	<string name="twitter_signin_successful">You\'ve successfully signed in\nwith Twitter</string>
-	<string name="twitter_already_logged_in">You\'re already logged in with Twitter</string>
-	<string name="twitter_tweet_successful">Successfully posted into your Twitter timeline</string>
-	<string name="twitter_tweet_unauthorized">Your Twitter login/password is incorrect\nTry to relogin</string>
-	
-	<string name="facebook_app_id">317236605127445</string>
-	<string name="facebook_dev_hash">XMHVlzaq78trceyxTm/IYBV1A0U=</string>
-	<string name="facebook_login_cancelled">Facebook login unsuccessful</string>
-	<string name="facebook_login_successful">You\'ve successfully logged in\nwith Facebook</string>
-	<string name="facebook_signin_successful">You\'ve successfully signed in with Facebook</string>
-	<string name="facebook_unauthorized">Your Facebook login/password is incorrect\nTry to relogin</string>
-	<string name="facebook_already_logged_in">You\'re already logged in\nwith Facebook</string>
-	<string name="facebook_post_successful">Successfully posted into your Facebook timeline</string>
-	
+    <string name="app_post_facebook">Post to Facebook</string>
+    <string name="app_post_twitter">Post to Twitter</string>
+    <string name="twitter_login_cancelled">Twitter login unsuccessful</string>
+    <string name="twitter_login_successful">You\'ve successfully logged in\nwith Twitter</string>
+    <string name="twitter_signin_successful">You\'ve successfully signed in\nwith Twitter</string>
+    <string name="twitter_already_logged_in">You\'re already logged in with Twitter</string>
+    <string name="twitter_tweet_successful">Successfully posted into your Twitter timeline</string>
+    <string name="twitter_tweet_unauthorized">Your Twitter login/password is incorrect\nTry to relogin</string>
+    <string name="facebook_app_id">317236605127445</string>
+    <string name="facebook_dev_hash">XMHVlzaq78trceyxTm/IYBV1A0U=</string>
+    <string name="facebook_login_cancelled">Facebook login unsuccessful</string>
+    <string name="facebook_login_successful">You\'ve successfully logged in\nwith Facebook</string>
+    <string name="facebook_signin_successful">You\'ve successfully signed in with Facebook</string>
+    <string name="facebook_unauthorized">Your Facebook login/password is incorrect\nTry to relogin</string>
+    <string name="facebook_already_logged_in">You\'re already logged in\nwith Facebook</string>
+    <string name="facebook_post_successful">Successfully posted into your Facebook timeline</string>
+
+    <string name="action_settings">Settings</string>
+
 </resources>

@@ -14,19 +14,6 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		FacebookPoster fp = new FacebookPoster(this);
-		
-		//fp.logout();
-		fp.login();
-		fp.post("One more post from application!");
-		
-		TwitterPoster tp = new TwitterPoster(this);
-		
-		//tp.logout();
-		//tp.login();
-		tp.post("One more post from application!");
-		
-		
 		ParseAnalytics.trackAppOpened(getIntent());
 	}
 
