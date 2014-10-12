@@ -14,13 +14,14 @@ public class FacebookPostActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.facebook_post_activity);
 	    
-	    Intent intent = getIntent();
-	    String action = intent.getAction();
-	    String type = intent.getType();
+	    FacebookPoster fp = new FacebookPoster(this);
+	    Intent intent 	  = getIntent();
+	    String action 	  = intent.getAction();
+	    String type 	  = intent.getType();
 
 	    if (Intent.ACTION_SEND.equals(action) && type != null) {
 	        if ("text/plain".equals(type)) {
-	        	Log.d(TAG, intent.getStringExtra(Intent.EXTRA_TEXT));
+	        	fp.post(intent.getStringExtra(Intent.EXTRA_TEXT));
 	        }
 	    }
 	}

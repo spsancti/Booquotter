@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
@@ -36,13 +37,15 @@ public class FacebookPoster implements SocialPoster{
 	}
 	
 	/*
-	 * Calls built in activity in facebook to open login dialog
-	 * You must call it prior to public void @post()
+	 * Calls built in activity in Facebook to open login dialog
 	 */
 	@Override
 	public void login() {
+		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
+			Toast.makeText(context, R.string.facebook_already_logged_in,   Toast.LENGTH_SHORT).show();
+			return;
+		}
 		permissions.add(ParseFacebookUtils.Permissions.Extended.PUBLISH_ACTIONS);
-
 		final NewPermissionsRequest newPermissionsRequest = new NewPermissionsRequest((Activity) context, permissions);
 
 		ParseFacebookUtils.logIn((Activity) context, new LogInCallback() {
@@ -67,7 +70,7 @@ public class FacebookPoster implements SocialPoster{
 	 */	
 	@Override
 	public void logout() {
-		ParseUser.logOut();
+	//	ParseUser.logOut();
 		com.facebook.Session fbs = com.facebook.Session.getActiveSession();
 		  if (fbs == null) {
 		    fbs = new com.facebook.Session(context);
@@ -77,19 +80,27 @@ public class FacebookPoster implements SocialPoster{
 		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
 			try {
 				ParseFacebookUtils.unlink(ParseUser.getCurrentUser());
-			} catch (ParseException e) {e.printStackTrace();}
+				Toast.makeText(context, R.string.facebook_logged_out, Toast.LENGTH_LONG).show();
+			} catch (ParseException e) {
+				e.printStackTrace();
+				Toast.makeText(context, R.string.facebook_not_logged_out, Toast.LENGTH_LONG).show();
+			}
 		}		
 	}
 
 	/*
-	 * Call this after login
+	 * If you're not logged in, it will log you in and than post
 	 */
+	//In my opinion, there is some shit with re-logging in... needs review
 	@Override
 	public void post(String text) {		
-		Bundle params = new Bundle();
+		final Bundle params = new Bundle();
+		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
 		params.putString("message", text);
-	
-		new Request(Session.getActiveSession(), "/me/feed", params, HttpMethod.POST, new Request.Callback() {
+
+		Log.d(TAG, "ENTERD POST");
+		//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
+		final Request.Callback callback = new Request.Callback() {
 			@Override
 	        public void onCompleted(Response response) {
 				FacebookRequestError error = response.getError();
@@ -99,7 +110,23 @@ public class FacebookPoster implements SocialPoster{
 					Toast.makeText(context, R.string.facebook_post_successful, Toast.LENGTH_LONG).show();
 				}
 			}
+		   };
+		   //if we're not logged in, log in first and than try to post in callback!
+		   if(!isLoggedIn()){//it cannot log in here! need review
+			   Log.d(TAG, "NOT LOGGED IN");
+			   login();//watta hell??? it won't call done! just funky nothing!
 		   }
-		).executeAsync();
+		   else {
+			   new Request(Session.getActiveSession(), "/me/feed", params, HttpMethod.POST, callback).executeAsync();
+		   }
+		
+	}
+
+	@Override
+	public boolean isLoggedIn() {
+		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser()))
+			return true;
+		else
+			return false;
 	}
 }

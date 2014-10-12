@@ -47,7 +47,6 @@ public class TwitterPoster implements SocialPoster{
 	
 	/*
 	 * Calls built in activity in parse to open login dialog in twitter
-	 * You must call it prior to public void @post()
 	 */
 	@Override
 	public void login(){
@@ -59,7 +58,7 @@ public class TwitterPoster implements SocialPoster{
 			  @Override
 			  public void done(ParseUser user, ParseException err) {
 			    if (user == null) {
-			      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();			      
+			      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();	
 			    } else if (user.isNew()) {
 			    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();
 			    } else {
@@ -77,12 +76,16 @@ public class TwitterPoster implements SocialPoster{
 		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
 			try {
 				ParseTwitterUtils.unlink(ParseUser.getCurrentUser());
-			} catch (ParseException e) {e.printStackTrace();}
+				Toast.makeText(context, R.string.twitter_logged_out, Toast.LENGTH_LONG).show();
+			} catch (ParseException e) {
+				e.printStackTrace();
+				Toast.makeText(context, R.string.twitter_not_logged_out, Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 	
 	/*
-	 * Call this after login
+	 * If you're not logged in, it will log you in and than post
 	 */
 	@Override
 	public void post(String text){
@@ -90,7 +93,28 @@ public class TwitterPoster implements SocialPoster{
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		new makeTweetTask().execute(text);		
+		//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
+		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
+
+		//if we're not logged in, log in first and than try to post in callback!
+		if(!isLoggedIn()){
+			final String fText = text;
+			ParseTwitterUtils.logIn(context, new LogInCallback() {
+				  @Override
+				  public void done(ParseUser user, ParseException err) {
+				    if (user == null) {
+				      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();
+				      	return;
+				    } else if (user.isNew()) {
+				    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();
+				    } else {
+				    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
+				    }
+				   new makeTweetTask().execute(fText); 
+				  }
+				});		
+		}
+		else new makeTweetTask().execute(text);		
 	}
 	
 	/*
@@ -152,11 +176,24 @@ public class TwitterPoster implements SocialPoster{
 					
 					case 401:{
 				    	Toast.makeText(context, R.string.twitter_tweet_unauthorized,  Toast.LENGTH_LONG).show();
+						Log.d(TAG, "Server returned 401:Unauthorized");
+					}break;
+					
+					case 220:{
+				    	Toast.makeText(context, R.string.twitter_tweet_login_failed,  Toast.LENGTH_LONG).show();
 				    	logout();
 				    	login();
 					}break;
 				}
 			} catch(Exception e) { e.printStackTrace();}
 		}
+	}
+
+	@Override
+	public boolean isLoggedIn() {
+		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser()))
+			return true;
+		else
+			return false;
 	}
 }
