@@ -21,7 +21,6 @@ import com.parse.ParseUser;
 import com.parse.ParseException;
 
 public class FacebookPoster implements SocialPoster{
-	@SuppressWarnings("unused")
 	private static String TAG 			  = "FacebookPoster";
 	public  static String FACEBOOK_APP_ID = "317236605127445";
 	
