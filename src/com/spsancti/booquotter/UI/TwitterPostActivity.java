@@ -1,4 +1,7 @@
-package com.spsancti.booquotter;
+package com.spsancti.booquotter.UI;
+
+import com.spsancti.booquotter.Booquotter;
+import com.spsancti.booquotter.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,16 +16,22 @@ public class TwitterPostActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.twitter_post_activity);
+    	Booquotter.tp.setActivity(this);
 
-	    TwitterPoster tp = new TwitterPoster(this);
 	    Intent intent 	 = getIntent();
 	    String action 	 = intent.getAction();
 	    String type 	 = intent.getType();
 
 	    if (Intent.ACTION_SEND.equals(action) && type != null) {
 	        if ("text/plain".equals(type)) {
-	        	tp.post(intent.getStringExtra(Intent.EXTRA_TEXT));
+	        	Booquotter.tp.post(intent.getStringExtra(Intent.EXTRA_TEXT));
 	        }
 	    }
+	}
+
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		Booquotter.tp.setActivity(null);
 	}
 }

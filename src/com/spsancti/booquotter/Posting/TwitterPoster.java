@@ -1,4 +1,4 @@
-package com.spsancti.booquotter;
+package com.spsancti.booquotter.Posting;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -25,14 +27,13 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
+import com.spsancti.booquotter.R;
 
-public class TwitterPoster implements SocialPoster{
-	private static String TAG = "TwitterPoster";
-	
+public class TwitterPoster extends SocialPoster{
+	private static String TAG = "TwitterPoster";	
 	public 	static String TWITTER_API_KEY 	 = "KgrlLNXIvWyzRpzo3sJbDRkgs";
 	public 	static String TWITTER_API_SECRET = "OmmcA3RCyyryJHgUAs5bDtKO2cnvIZ3MkKLVh60FvVjKOI34Yz";
 	
-	private Context 	 		context;
 	private HttpClient   		client;
 	private HttpPost	  		tweet;
 	private List<NameValuePair> json;
@@ -44,12 +45,17 @@ public class TwitterPoster implements SocialPoster{
 		context = c;		
 		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
 	}
+	public TwitterPoster(){
+		context = null;
+		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
+	}
 	
 	/*
 	 * Calls built in activity in parse to open login dialog in twitter
 	 */
 	@Override
-	public void login(){
+	public void login() throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
 		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
 			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
@@ -72,7 +78,8 @@ public class TwitterPoster implements SocialPoster{
 	 * Call this whenever you want 
 	 */	
 	@Override
-	public void logout(){
+	public void logout() throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
 		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
 			try {
 				ParseTwitterUtils.unlink(ParseUser.getCurrentUser());
@@ -88,14 +95,16 @@ public class TwitterPoster implements SocialPoster{
 	 * If you're not logged in, it will log you in and than post
 	 */
 	@Override
-	public void post(String text){
+	public void post(String text) throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
 		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
-
+	
+		
 		//if we're not logged in, log in first and than try to post in callback!
 		if(!isLoggedIn()){
 			final String fText = text;
@@ -117,9 +126,6 @@ public class TwitterPoster implements SocialPoster{
 		else new makeTweetTask().execute(text);		
 	}
 	
-	/*
-	 * Asynchronous posting, because networking in main thread is forbidden
-	 */
 	private class makeTweetTask extends AsyncTask<String, Void, Integer>{
 
 	    public String convertStreamToString(InputStream is)
@@ -151,7 +157,7 @@ public class TwitterPoster implements SocialPoster{
 			 try {
 				json.add(new BasicNameValuePair("status", text));
 				tweet.setHeader("Content-type", "application/x-www-form-urlencoded");
-			    tweet.setEntity(new UrlEncodedFormEntity(json));
+			    tweet.setEntity(new UrlEncodedFormEntity(json, HTTP.UTF_8));
 			    
 				ParseTwitterUtils.getTwitter().signRequest(tweet);
 				
@@ -191,9 +197,6 @@ public class TwitterPoster implements SocialPoster{
 
 	@Override
 	public boolean isLoggedIn() {
-		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser()))
-			return true;
-		else
-			return false;
+		return ParseTwitterUtils.isLinked(ParseUser.getCurrentUser());
 	}
 }

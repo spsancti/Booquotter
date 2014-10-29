@@ -1,9 +1,10 @@
-package com.spsancti.booquotter;
+package com.spsancti.booquotter.Posting;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +20,12 @@ import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.ParseException;
+import com.spsancti.booquotter.R;
 
-public class FacebookPoster implements SocialPoster{
+public class FacebookPoster extends SocialPoster{
 	private static String TAG 			  = "FacebookPoster";
 	public  static String FACEBOOK_APP_ID = "317236605127445";
 	
-	private Context context;
 	private List<String> permissions;
 	
 	/*
@@ -34,12 +35,18 @@ public class FacebookPoster implements SocialPoster{
 		context = c;
 		permissions = new ArrayList<String>();
 	}
+	public FacebookPoster(){
+		context = null;
+		permissions = new ArrayList<String>();
+	}
 	
 	/*
 	 * Calls built in activity in Facebook to open login dialog
 	 */
 	@Override
-	public void login() {
+	public void login() throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
+		
 		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
 			Toast.makeText(context, R.string.facebook_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
@@ -68,7 +75,8 @@ public class FacebookPoster implements SocialPoster{
 	 * Call this whenever you want 
 	 */	
 	@Override
-	public void logout() {
+	public void logout() throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
 	//	ParseUser.logOut();
 		com.facebook.Session fbs = com.facebook.Session.getActiveSession();
 		  if (fbs == null) {
@@ -92,7 +100,8 @@ public class FacebookPoster implements SocialPoster{
 	 */
 	//In my opinion, there is some shit with re-logging in... needs review
 	@Override
-	public void post(String text) {		
+	public void post(String text) throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");	
 		final Bundle params = new Bundle();
 		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
 		params.putString("message", text);
@@ -123,9 +132,6 @@ public class FacebookPoster implements SocialPoster{
 
 	@Override
 	public boolean isLoggedIn() {
-		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser()))
-			return true;
-		else
-			return false;
+		return ParseFacebookUtils.isLinked(ParseUser.getCurrentUser());
 	}
 }

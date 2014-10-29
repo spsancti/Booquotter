@@ -17,11 +17,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name=".StartActivity"
+            android:name="com.spsancti.booquotter.UI.StartupActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,7 +34,7 @@
             android:screenOrientation="unspecified"
             android:theme="@style/com_facebook_loginview_default_style" >
         </activity>
-        <activity android:name=".FacebookPostActivity" >
+        <activity android:name="com.spsancti.booquotter.UI.FacebookPostActivity" >
             <intent-filter android:label="@string/app_post_facebook" >
                 <action android:name="android.intent.action.SEND" />
 
@@ -44,7 +43,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".TwitterPostActivity" >
+        <activity android:name="com.spsancti.booquotter.UI.TwitterPostActivity" >
             <intent-filter android:label="@string/app_post_twitter" >
                 <action android:name="android.intent.action.SEND" />
 
@@ -53,6 +52,11 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity 
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <service android:name="SharingService"></service>
     </application>
 
 </manifest>

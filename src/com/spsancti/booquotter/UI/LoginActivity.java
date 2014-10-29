@@ -1,27 +1,24 @@
-package com.spsancti.booquotter;
+package com.spsancti.booquotter.UI;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
+import com.spsancti.booquotter.Booquotter;
 import com.spsancti.booquotter.R;
 
-public class StartActivity extends Activity{
+public class LoginActivity extends Activity{
 
-	private TwitterPoster tp;
-	private FacebookPoster fp;
+
+	
 	/** Called when the activity is first created. */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		tp = new TwitterPoster(this);
-		fp = new FacebookPoster(this);
+		Booquotter.tp.setActivity(this);
+		Booquotter.fp.setActivity(this);
 	}
 
 	@Override
@@ -30,18 +27,27 @@ public class StartActivity extends Activity{
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);	  
 	}
 	
+	
+	@Override
+	protected void onDestroy(){
+		Booquotter.tp.setActivity(null);
+		Booquotter.fp.setActivity(null);
+	}
+	
+	
 	public void loginTwitter(View v){
-		tp.login();
+		Booquotter.tp.login();
 	}
 	
 	public void loginFacebook(View v){
-		fp.login();
+		Booquotter.fp.login();
 	}
 	
 	public void logout(View v){
-		tp.logout();
-		fp.logout();
+		Booquotter.tp.logout();
+		Booquotter.fp.logout();
 	}
+
 
 	
 }

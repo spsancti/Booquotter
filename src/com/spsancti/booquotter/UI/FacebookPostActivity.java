@@ -1,4 +1,7 @@
-package com.spsancti.booquotter;
+package com.spsancti.booquotter.UI;
+
+import com.spsancti.booquotter.Booquotter;
+import com.spsancti.booquotter.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,17 +16,22 @@ public class FacebookPostActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.facebook_post_activity);
-	    
-	    FacebookPoster fp = new FacebookPoster(this);
+    	Booquotter.fp.setActivity(this);
+
 	    Intent intent 	  = getIntent();
 	    String action 	  = intent.getAction();
 	    String type 	  = intent.getType();
 
 	    if (Intent.ACTION_SEND.equals(action) && type != null) {
 	        if ("text/plain".equals(type)) {
-	        	fp.post(intent.getStringExtra(Intent.EXTRA_TEXT));
+	        	Booquotter.fp.post(intent.getStringExtra(Intent.EXTRA_TEXT));
 	        }
 	    }
 	}
-
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		Booquotter.tp.setActivity(null);
+	}
 }

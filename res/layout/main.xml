@@ -3,14 +3,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Start activity" />
-
         <Button
             android:id="@+id/pbTwitterLogin"
             android:layout_width="wrap_content"
@@ -35,11 +27,20 @@
             android:id="@+id/pbLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView1"
+            android:layout_centerHorizontal="true"
             android:layout_below="@+id/pbFacebookLogin"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="26dp"
             android:onClick="logout"
             android:text="@string/logout_button" />
+
+        <!-- TODO: remove-->
+        <TextView 
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Start activity" />
 
 </RelativeLayout>
 
