@@ -35,10 +35,7 @@ public class FacebookPoster extends SocialPoster{
 		context = c;
 		permissions = new ArrayList<String>();
 	}
-	public FacebookPoster(){
-		context = null;
-		permissions = new ArrayList<String>();
-	}
+
 	
 	/*
 	 * Calls built in activity in Facebook to open login dialog
@@ -51,6 +48,7 @@ public class FacebookPoster extends SocialPoster{
 			Toast.makeText(context, R.string.facebook_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
 		}
+		
 		permissions.add(ParseFacebookUtils.Permissions.Extended.PUBLISH_ACTIONS);
 		final NewPermissionsRequest newPermissionsRequest = new NewPermissionsRequest((Activity) context, permissions);
 

@@ -14,13 +14,16 @@ public class Booquotter extends Application {
 	public static TwitterPoster tp;
 	public static FacebookPoster fp;
 	
+	private static String PARSE_API_KEY = "01PRrsZ0tuLhR8pyPLyNDuWQUDxhSd2Mi7YO5sHO";
+	private static String PARSE_API_SECRET = "fLPOE4sZWmrKe2HpSwyewqCsmKX7MFOauzgALnAF";
+	
   @Override
   public void onCreate() {
     super.onCreate();
 
-    Parse.initialize(this, "01PRrsZ0tuLhR8pyPLyNDuWQUDxhSd2Mi7YO5sHO", "fLPOE4sZWmrKe2HpSwyewqCsmKX7MFOauzgALnAF");    
-	ParseTwitterUtils.initialize(TwitterPoster.TWITTER_API_KEY, TwitterPoster.TWITTER_API_SECRET);
-	ParseFacebookUtils.initialize(FacebookPoster.FACEBOOK_APP_ID);
+    Parse				.initialize(this, PARSE_API_KEY, PARSE_API_SECRET);    
+	ParseTwitterUtils	.initialize(TwitterPoster.TWITTER_API_KEY, TwitterPoster.TWITTER_API_SECRET);
+	ParseFacebookUtils	.initialize(FacebookPoster.FACEBOOK_APP_ID);
 	
     ParseUser.enableAutomaticUser();
     ParseACL defaultACL = new ParseACL();     
@@ -29,7 +32,7 @@ public class Booquotter extends Application {
     defaultACL.setPublicReadAccess(true);    
     ParseACL.setDefaultACL(defaultACL, true);
     
-    tp = new TwitterPoster();
-    fp = new FacebookPoster();
+    tp = new TwitterPoster(null);
+    fp = new FacebookPoster(null);
   }
 }

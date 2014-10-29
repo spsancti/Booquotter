@@ -34,7 +34,8 @@
             android:screenOrientation="unspecified"
             android:theme="@style/com_facebook_loginview_default_style" >
         </activity>
-        <activity android:name="com.spsancti.booquotter.UI.FacebookPostActivity" >
+        <activity 
+            android:name="com.spsancti.booquotter.UI.FacebookPostActivity" >
             <intent-filter android:label="@string/app_post_facebook" >
                 <action android:name="android.intent.action.SEND" />
 

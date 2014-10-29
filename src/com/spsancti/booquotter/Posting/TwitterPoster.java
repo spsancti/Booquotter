@@ -45,18 +45,15 @@ public class TwitterPoster extends SocialPoster{
 		context = c;		
 		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
 	}
-	public TwitterPoster(){
-		context = null;
-		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
-	}
-	
+
 	/*
 	 * Calls built in activity in parse to open login dialog in twitter
 	 */
 	@Override
 	public void login() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
+		
+		if(isLoggedIn()){
 			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -80,7 +77,8 @@ public class TwitterPoster extends SocialPoster{
 	@Override
 	public void logout() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		if(ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())){
+		
+		if(isLoggedIn()){
 			try {
 				ParseTwitterUtils.unlink(ParseUser.getCurrentUser());
 				Toast.makeText(context, R.string.twitter_logged_out, Toast.LENGTH_LONG).show();
@@ -97,6 +95,7 @@ public class TwitterPoster extends SocialPoster{
 	@Override
 	public void post(String text) throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
+		
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;
