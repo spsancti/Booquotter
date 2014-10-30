@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
 
-public class SharingService extends Service {
+public class BgService extends Service {
 
 	@Override
 	public IBinder onBind(Intent arg0) {

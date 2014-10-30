@@ -1,7 +1,7 @@
 package com.spsancti.booquotter.UI;
 
 import com.spsancti.booquotter.R;
-import com.spsancti.booquotter.Servicing.SharingService;
+import com.spsancti.booquotter.Servicing.BgService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,7 +19,7 @@ public class StartupActivity extends Activity {
 
 		pm = getPackageManager();
 		launchFBReader();
-		startService(new Intent(this, SharingService.class));
+		startService(new Intent(this, BgService.class));
 		
 		finish();
 	}
@@ -27,7 +27,7 @@ public class StartupActivity extends Activity {
 	@Override
 	protected void onPause(){
 		super.onPause();
-		//stopService(new Intent(this, SharingService.class));
+		//stopService(new Intent(this, BgService.class));
 	}
 	
 	@Override
