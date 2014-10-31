@@ -1,7 +1,7 @@
-package com.spsancti.booquotter.UI;
+package com.spsancti.booquotter.ui;
 
 import com.spsancti.booquotter.R;
-import com.spsancti.booquotter.Servicing.BgService;
+import com.spsancti.booquotter.servicing.BgService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,7 +21,7 @@ public class StartupActivity extends Activity {
 		launchFBReader();
 		startService(new Intent(this, BgService.class));
 		
-		finish();
+		//finish();
 	}
 	
 	@Override

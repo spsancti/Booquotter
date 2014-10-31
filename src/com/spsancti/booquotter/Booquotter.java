@@ -7,8 +7,9 @@ import com.parse.ParseACL;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
-import com.spsancti.booquotter.Posting.FacebookPoster;
-import com.spsancti.booquotter.Posting.TwitterPoster;
+import com.spsancti.booquotter.posting.FacebookPoster;
+import com.spsancti.booquotter.posting.TwitterPoster;
+import com.spsancti.booquotter.servicing.IncomingReceiver;
 
 public class Booquotter extends Application {
 	public static TwitterPoster tp;
@@ -31,6 +32,7 @@ public class Booquotter extends Application {
     // If you would like all objects to be private by default, remove this line.
     defaultACL.setPublicReadAccess(true);    
     ParseACL.setDefaultACL(defaultACL, true);
+    
     
     tp = new TwitterPoster(null);
     fp = new FacebookPoster(null);

@@ -1,4 +1,4 @@
-package com.spsancti.booquotter.Servicing;
+package com.spsancti.booquotter.servicing;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.spsancti.booquotter.UI;
+package com.spsancti.booquotter.ui;
 
 import com.spsancti.booquotter.Booquotter;
 import com.spsancti.booquotter.R;

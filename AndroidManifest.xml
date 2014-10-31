@@ -16,8 +16,13 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
+        
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        
         <activity
-            android:name="com.spsancti.booquotter.UI.StartupActivity"
+            android:name="com.spsancti.booquotter.ui.StartupActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,17 +30,14 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
         <activity
             android:name="com.facebook.LoginActivity"
             android:screenOrientation="unspecified"
             android:theme="@style/com_facebook_loginview_default_style" >
         </activity>
+        
         <activity 
-            android:name="com.spsancti.booquotter.UI.FacebookPostActivity" >
+            android:name="com.spsancti.booquotter.ui.FacebookPostActivity" >
             <intent-filter android:label="@string/app_post_facebook" >
                 <action android:name="android.intent.action.SEND" />
 
@@ -44,7 +46,8 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name="com.spsancti.booquotter.UI.TwitterPostActivity" >
+        
+        <activity android:name="com.spsancti.booquotter.ui.TwitterPostActivity" >
             <intent-filter android:label="@string/app_post_twitter" >
                 <action android:name="android.intent.action.SEND" />
 
@@ -53,11 +56,42 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        
         <activity 
-            android:name=".LoginActivity"
+            android:name="com.spsancti.booquotter.ui.LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
-        <service android:name="SharingService"></service>
+        
+        <service android:name="com.spsancti.booquotter.servicing.BgService"></service>
+        <receiver android:name="com.spsancti.booquotter.servicing.IncomingReceiver" 
+            	  android:exported="true">
+            <intent-filter>
+                <action android:name="com.hyperionics.fbreader.plugin.tts_plus.SVC_STARTED"></action>
+                <action android:name="com.hyperionics.fbreader.plugin.tts_plus.TTSP_KILL"></action>
+                <action android:name="android.fbreader.action.API"></action>
+				<action android:name="android.fbreader.action.API_CALLBACK"></action>
+				<action android:name="android.fbreader.action.VIEW"></action>
+				<action android:name="android.fbreader.action.CANCEL_MENU"></action>
+				<action android:name="android.fbreader.action.CONFIG_SERVICE"></action>
+				<action android:name="android.fbreader.action.LIBRARY_SERVICE"></action>
+				<action android:name="android.fbreader.action.BOOK_INFO"></action>
+				<action android:name="android.fbreader.action.LIBRARY"></action>
+				<action android:name="android.fbreader.action.EXTERNAL_LIBRARY"></action>
+				<action android:name="android.fbreader.action.BOOKMARKS"></action>
+				<action android:name="android.fbreader.action.EXTERNAL_BOOKMARKS"></action>
+				<action android:name="android.fbreader.action.PREFERENCES"></action>
+				<action android:name="android.fbreader.action.NETWORK_LIBRARY"></action>
+				<action android:name="android.fbreader.action.OPEN_NETWORK_CATALOG"></action>
+				<action android:name="android.fbreader.action.ERROR"></action>
+				<action android:name="android.fbreader.action.CRASH"></action>
+				<action android:name="android.fbreader.action.PLUGIN"></action>
+				<action android:name="android.fbreader.action.CLOSE"></action>
+				<action android:name="android.fbreader.action.PLUGIN_CRASH"></action>
+				<action android:name="android.fbreader.action.EDIT_STYLES"></action>
+				                
+            </intent-filter>
+            
+        </receiver>
     </application>
 
 </manifest>

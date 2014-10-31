@@ -1,4 +1,4 @@
-package com.spsancti.booquotter.Posting;
+package com.spsancti.booquotter.posting;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;

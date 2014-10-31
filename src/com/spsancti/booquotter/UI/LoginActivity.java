@@ -1,4 +1,4 @@
-package com.spsancti.booquotter.UI;
+package com.spsancti.booquotter.ui;
 
 import android.app.Activity;
 import android.content.Intent;
