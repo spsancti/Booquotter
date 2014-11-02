@@ -1,14 +1,14 @@
 package com.spsancti.booquotter.ui;
 
-import com.spsancti.booquotter.R;
-import com.spsancti.booquotter.servicing.BgService;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
+import android.os.Bundle; 
 import android.widget.Toast;
+
+import com.spsancti.booquotter.R;
+import com.spsancti.booquotter.servicing.HeadService;
 
 public class StartupActivity extends Activity {
 	private PackageManager pm;
@@ -19,21 +19,21 @@ public class StartupActivity extends Activity {
 
 		pm = getPackageManager();
 		launchFBReader();
-		startService(new Intent(this, BgService.class));
-		
+		startService(new Intent(this, HeadService.class));
 		//finish();
 	}
 	
 	@Override
 	protected void onPause(){
 		super.onPause();
-		//stopService(new Intent(this, BgService.class));
+		
 	}
 	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
 		Toast.makeText(this, "StartupActivity destroyed", Toast.LENGTH_SHORT).show();
+		stopService(new Intent(this, HeadService.class));
 	}
 	
 	protected void launchFBReader() {
