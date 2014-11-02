@@ -52,7 +52,7 @@ public class TwitterPoster extends SocialPoster{
 	@Override
 	public void login() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		
+
 		if(isLoggedIn()){
 			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
@@ -93,9 +93,10 @@ public class TwitterPoster extends SocialPoster{
 	 * If you're not logged in, it will log you in and than post
 	 */
 	@Override
-	public void post(String text) throws ActivityNotFoundException{
+	public void post(String text) throws ActivityNotFoundException, NullPointerException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		
+		if(text == null) throw new NullPointerException("Unfortunately, @text is null");
+
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;

@@ -98,8 +98,9 @@ public class FacebookPoster extends SocialPoster{
 	 */
 	//In my opinion, there is some shit with re-logging in... needs review
 	@Override
-	public void post(String text) throws ActivityNotFoundException{
+	public void post(String text) throws ActivityNotFoundException, NullPointerException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");	
+		if(text == null) throw new NullPointerException("Unfortunately, @text is null");
 		final Bundle params = new Bundle();
 		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
 		params.putString("message", text);
