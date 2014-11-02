@@ -9,7 +9,6 @@ import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.spsancti.booquotter.posting.FacebookPoster;
 import com.spsancti.booquotter.posting.TwitterPoster;
-import com.spsancti.booquotter.servicing.IncomingReceiver;
 
 public class Booquotter extends Application {
 	public static TwitterPoster tp;
