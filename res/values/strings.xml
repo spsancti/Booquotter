@@ -13,6 +13,8 @@
     <string name="twitter_tweet_successful">Successfully posted into your Twitter timeline</string>
     <string name="twitter_tweet_unauthorized">Server returned code 401\nTry to relogin</string>
     <string name="twitter_tweet_login_failed">Your credentials are incorrect\nTry to relogin</string>
+    <string name="twitter_tweet_duplicate">Status is a duplicate.</string>
+    
     <string name="twitter_login_button">Log in with Twitter</string>
     <string name="facebook_app_id">317236605127445</string>
     <string name="facebook_dev_hash">XMHVlzaq78trceyxTm/IYBV1A0U=</string>

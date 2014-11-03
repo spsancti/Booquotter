@@ -17,6 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -37,43 +38,47 @@ public class TwitterPoster extends SocialPoster{
 	private HttpClient   		client;
 	private HttpPost	  		tweet;
 	private List<NameValuePair> json;
+
+	private String lastPost;
 	
-	/*
-	 * To make it work you shall pass @Activity, not the @Context
-	 */
+	private boolean needPostAfterLogin;
+	private LogInCallback pLICB = new LogInCallback() {		
+		@Override
+		public void done(ParseUser user, ParseException e) {
+			if (user == null) {
+		      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();	
+		      	return;
+		    } else if (user.isNew()) {
+		    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();
+		    } else {
+		    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
+		    }
+			if(needPostAfterLogin) post(lastPost);
+		}
+	}; 
+	
 	public TwitterPoster(Context c){
-		context = c;		
+		context = c;
 		tweet 	= new HttpPost("https://api.twitter.com/1.1/statuses/update.json");
 	}
 
+	
 	/*
 	 * Calls built in activity in parse to open login dialog in twitter
 	 */
 	@Override
 	public void login() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-
 		if(isLoggedIn()){
 			Toast.makeText(context, R.string.twitter_already_logged_in,   Toast.LENGTH_SHORT).show();
 			return;
 		}
-		ParseTwitterUtils.logIn(context, new LogInCallback() {
-			  @Override
-			  public void done(ParseUser user, ParseException err) {
-			    if (user == null) {
-			      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();	
-			    } else if (user.isNew()) {
-			    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();
-			    } else {
-			    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
-			    }
-			  }
-			});		
+		needPostAfterLogin = false;
+		ParseTwitterUtils.logIn(context, pLICB);		
 	}
 	
-	/*
-	 * Call this whenever you want 
-	 */	
+
+	
 	@Override
 	public void logout() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
@@ -95,35 +100,23 @@ public class TwitterPoster extends SocialPoster{
 	@Override
 	public void post(String text) throws ActivityNotFoundException, NullPointerException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		if(text == null) throw new NullPointerException("Unfortunately, @text is null");
-
+		if(text    == null) throw new NullPointerException("Unfortunately, @text is null");
 		if(text.length() > 140) {
 			Toast.makeText(context, "Text length exceeds 140 symbols", Toast.LENGTH_SHORT).show();
 			return;
-		}
-		//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
-		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
+		}		
+		lastPost = text;
 	
-		
 		//if we're not logged in, log in first and than try to post in callback!
 		if(!isLoggedIn()){
-			final String fText = text;
-			ParseTwitterUtils.logIn(context, new LogInCallback() {
-				  @Override
-				  public void done(ParseUser user, ParseException err) {
-				    if (user == null) {
-				      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();
-				      	return;
-				    } else if (user.isNew()) {
-				    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();
-				    } else {
-				    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
-				    }
-				   new makeTweetTask().execute(fText); 
-				  }
-				});		
+			needPostAfterLogin = true;
+			ParseTwitterUtils.logIn(context, pLICB);		
 		}
-		else new makeTweetTask().execute(text);		
+		else{
+			//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
+			text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");			
+			new makeTweetTask().execute(text);		
+		}
 	}
 	
 	private class makeTweetTask extends AsyncTask<String, Void, Integer>{
@@ -189,8 +182,13 @@ public class TwitterPoster extends SocialPoster{
 				    	Toast.makeText(context, R.string.twitter_tweet_login_failed,  Toast.LENGTH_LONG).show();
 				    	logout();
 				    	login();
+					}break;		
+					
+					case 187:{
+						Toast.makeText(context, R.string.twitter_tweet_duplicate,  Toast.LENGTH_LONG).show();
 					}break;
 				}
+				
 			} catch(Exception e) { e.printStackTrace();}
 		}
 	}
