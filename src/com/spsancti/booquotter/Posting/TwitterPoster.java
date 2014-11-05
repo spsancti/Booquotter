@@ -48,6 +48,7 @@ public class TwitterPoster extends SocialPoster{
 			Log.d("DEBUG", "Done TwitterPoster.LoginCallBack");
 			if (user == null) {
 		      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();	
+		      	doFinish();
 		      	return;
 		    } else if (user.isNew()) {
 		    	Toast.makeText(context, R.string.twitter_signin_successful, Toast.LENGTH_SHORT).show();

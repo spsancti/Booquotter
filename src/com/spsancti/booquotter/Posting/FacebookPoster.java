@@ -44,6 +44,7 @@ public class FacebookPoster extends SocialPoster{
 			Log.d("DEBUG", "Done FacebookPoster.LoginCallBack");
 				  if (user == null) {
 				      	Toast.makeText(context, R.string.facebook_login_cancelled,   Toast.LENGTH_SHORT).show();
+				      	doFinish();
 				      	return;
 				    } else if (user.isNew()) {
 				    	Toast.makeText(context, R.string.facebook_signin_successful, Toast.LENGTH_SHORT).show();
