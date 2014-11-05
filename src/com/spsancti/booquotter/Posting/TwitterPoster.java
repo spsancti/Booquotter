@@ -18,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import android.app.Activity;
+
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -39,12 +40,12 @@ public class TwitterPoster extends SocialPoster{
 	private HttpPost	  		tweet;
 	private List<NameValuePair> json;
 
-	private String lastPost;
 	
 	private boolean needPostAfterLogin;
 	private LogInCallback pLICB = new LogInCallback() {		
 		@Override
 		public void done(ParseUser user, ParseException e) {
+			Log.d("DEBUG", "Done TwitterPoster.LoginCallBack");
 			if (user == null) {
 		      	Toast.makeText(context, R.string.twitter_login_cancelled,   Toast.LENGTH_SHORT).show();	
 		      	return;
@@ -53,7 +54,10 @@ public class TwitterPoster extends SocialPoster{
 		    } else {
 		    	Toast.makeText(context, R.string.twitter_login_successful,  Toast.LENGTH_SHORT).show();
 		    }
-			if(needPostAfterLogin) post(lastPost);
+			if(needPostAfterLogin) {
+				post(lastPost); 				
+			}	
+			else doFinish();
 		}
 	}; 
 	
@@ -76,8 +80,6 @@ public class TwitterPoster extends SocialPoster{
 		needPostAfterLogin = false;
 		ParseTwitterUtils.logIn(context, pLICB);		
 	}
-	
-
 	
 	@Override
 	public void logout() throws ActivityNotFoundException{
@@ -107,7 +109,6 @@ public class TwitterPoster extends SocialPoster{
 		}		
 		lastPost = text;
 	
-		//if we're not logged in, log in first and than try to post in callback!
 		if(!isLoggedIn()){
 			needPostAfterLogin = true;
 			ParseTwitterUtils.logIn(context, pLICB);		
@@ -186,8 +187,9 @@ public class TwitterPoster extends SocialPoster{
 					
 					case 187:{
 						Toast.makeText(context, R.string.twitter_tweet_duplicate,  Toast.LENGTH_LONG).show();
-					}break;
+					}break;					
 				}
+				doFinish();
 				
 			} catch(Exception e) { e.printStackTrace();}
 		}
@@ -196,5 +198,13 @@ public class TwitterPoster extends SocialPoster{
 	@Override
 	public boolean isLoggedIn() {
 		return ParseTwitterUtils.isLinked(ParseUser.getCurrentUser());
+	}
+
+
+	public void doFinish() {
+		if(context instanceof Activity){
+			((Activity)context).finish();
+			setActivity(null);
+		}		
 	}
 }
