@@ -1,5 +1,6 @@
 package com.spsancti.booquotter.posting;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 
@@ -15,5 +16,12 @@ public abstract class SocialPoster {
 
 	public void setActivity(Context c){
 		context = c;
+	}
+	
+	public void doFinish() {
+		if(context instanceof Activity){
+			((Activity)context).finish();
+			setActivity(null);
+		}		
 	}
 }

@@ -26,35 +26,22 @@ public class FacebookPoster extends SocialPoster{
 	private static String TAG 			  = "FacebookPoster";
 	public  static String FACEBOOK_APP_ID = "317236605127445";
 	
-	private List<String> permissions;
-	
+	private List<String> permissions = new ArrayList<String>();
+
 	/*
 	 * To make it work you shall pass @Activity, not the @Context
 	 */
 	public FacebookPoster(Context c){
-		context = c;
-		permissions = new ArrayList<String>();
-	}
-
-	
-	/*
-	 * Calls built in activity in Facebook to open login dialog
-	 */
-	@Override
-	public void login() throws ActivityNotFoundException{
-		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-		
-		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
-			Toast.makeText(context, R.string.facebook_already_logged_in,   Toast.LENGTH_SHORT).show();
-			return;
-		}
-		
+		context = c;	
 		permissions.add(ParseFacebookUtils.Permissions.Extended.PUBLISH_ACTIONS);
-		final NewPermissionsRequest newPermissionsRequest = new NewPermissionsRequest((Activity) context, permissions);
-
-		ParseFacebookUtils.logIn((Activity) context, new LogInCallback() {
-			  @Override
-			  public void done(ParseUser user, ParseException err) {
+	}
+	
+	
+	private boolean needPostAfterLogin;
+	private LogInCallback pLICB = new LogInCallback() {		
+		@Override
+			public void done(ParseUser user, ParseException err) {
+			Log.d("DEBUG", "Done FacebookPoster.LoginCallBack");
 				  if (user == null) {
 				      	Toast.makeText(context, R.string.facebook_login_cancelled,   Toast.LENGTH_SHORT).show();
 				      	return;
@@ -63,10 +50,25 @@ public class FacebookPoster extends SocialPoster{
 				    } else {
 				    	Toast.makeText(context, R.string.facebook_login_successful,  Toast.LENGTH_SHORT).show();
 				   }
-				  	ParseFacebookUtils.getSession().requestNewPublishPermissions(newPermissionsRequest);
+				  	ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest((Activity) context, permissions));
 					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
-			  }			  
-			});
+					
+					if(needPostAfterLogin){
+						post(lastPost);
+					}
+					else doFinish();
+			  }
+	};
+	
+	@Override
+	public void login() throws ActivityNotFoundException{
+		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");		
+		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
+			Toast.makeText(context, R.string.facebook_already_logged_in,   Toast.LENGTH_SHORT).show();
+			return;
+		}		
+		needPostAfterLogin = false;
+		ParseFacebookUtils.logIn((Activity) context, pLICB);
 	}
 
 	/*
@@ -75,13 +77,14 @@ public class FacebookPoster extends SocialPoster{
 	@Override
 	public void logout() throws ActivityNotFoundException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");
-	//	ParseUser.logOut();
+	
 		com.facebook.Session fbs = com.facebook.Session.getActiveSession();
-		  if (fbs == null) {
-		    fbs = new com.facebook.Session(context);
-		    com.facebook.Session.setActiveSession(fbs);
+		  if(fbs == null) {
+		     fbs = new com.facebook.Session(context);
+		     com.facebook.Session.setActiveSession(fbs);
 		  }
 		  fbs.closeAndClearTokenInformation();
+		  
 		if(ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())){
 			try {
 				ParseFacebookUtils.unlink(ParseUser.getCurrentUser());
@@ -100,14 +103,12 @@ public class FacebookPoster extends SocialPoster{
 	@Override
 	public void post(String text) throws ActivityNotFoundException, NullPointerException{
 		if(context == null)	throw new ActivityNotFoundException("It seems, you've forgotten to call setActivity(), dude.");	
-		if(text == null) throw new NullPointerException("Unfortunately, @text is null");
-		final Bundle params = new Bundle();
-		text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
-		params.putString("message", text);
+		if(text    == null) throw new NullPointerException("Unfortunately, @text is null");
+		lastPost = text;
+		
+		Bundle params = new Bundle();		
 
-		Log.d(TAG, "ENTERD POST");
-		//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
-		final Request.Callback callback = new Request.Callback() {
+		Request.Callback callback = new Request.Callback() {
 			@Override
 	        public void onCompleted(Response response) {
 				FacebookRequestError error = response.getError();
@@ -116,17 +117,23 @@ public class FacebookPoster extends SocialPoster{
 				} else {
 					Toast.makeText(context, R.string.facebook_post_successful, Toast.LENGTH_LONG).show();
 				}
-			}
-		   };
-		   //if we're not logged in, log in first and than try to post in callback!
-		   if(!isLoggedIn()){//it cannot log in here! need review
-			   Log.d(TAG, "NOT LOGGED IN");
-			   login();//watta hell??? it won't call done! just funky nothing!
-		   }
-		   else {
-			   new Request(Session.getActiveSession(), "/me/feed", params, HttpMethod.POST, callback).executeAsync();
-		   }
+				doFinish();
+			}};		
+
+		Log.d(TAG, "ENTERD POST");		
 		
+		//if we're not logged in, log in first and than try to post in callback!
+		if(!isLoggedIn()){//it cannot log in here! need review
+			Log.d(TAG, "NOT LOGGED IN");
+			needPostAfterLogin = true;
+			ParseFacebookUtils.logIn((Activity) context, pLICB);
+		}
+		else {
+			//there are funky &nbsp in some books instead of simple spaces (WTF, what for..?). Replace them.
+			text = text.replaceAll("([\\t\\r\\f\\xA0])", " ");
+			params.putString("message", text);
+			new Request(Session.getActiveSession(), "/me/feed", params, HttpMethod.POST, callback).executeAsync();
+		}
 	}
 
 	@Override

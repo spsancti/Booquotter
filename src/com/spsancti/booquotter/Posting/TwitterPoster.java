@@ -200,11 +200,4 @@ public class TwitterPoster extends SocialPoster{
 		return ParseTwitterUtils.isLinked(ParseUser.getCurrentUser());
 	}
 
-
-	public void doFinish() {
-		if(context instanceof Activity){
-			((Activity)context).finish();
-			setActivity(null);
-		}		
-	}
 }

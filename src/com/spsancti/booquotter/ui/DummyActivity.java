@@ -17,7 +17,7 @@ public class DummyActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_dummy);
-		Intent i = getIntent();
+		Intent 		i =   getIntent();
 		Bundle bundle = i.getExtras();
 		
 		if(bundle.containsKey("Twitter")){
