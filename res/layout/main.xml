@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/pbTwitterLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="119dp"
+            android:onClick="loginTwitter"
+            android:text="@string/twitter_login_button" />
+
+        <Button
+            android:id="@+id/pbFacebookLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pbTwitterLogin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:onClick="loginFacebook"
+            android:text="@string/facebook_login_button" />
+
+        <Button
+            android:id="@+id/pbLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/pbFacebookLogin"
+            android:layout_marginTop="26dp"
+            android:onClick="logout"
+            android:text="@string/logout_button" />
+
+        <!-- TODO: remove-->
+        <TextView 
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Start activity" />
+
+</RelativeLayout>
+
