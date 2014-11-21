@@ -14,8 +14,8 @@ public class Booquotter extends Application {
 	public static TwitterPoster tp;
 	public static FacebookPoster fp;
 	
-	private static String PARSE_API_KEY = "01PRrsZ0tuLhR8pyPLyNDuWQUDxhSd2Mi7YO5sHO";
-	private static String PARSE_API_SECRET = "fLPOE4sZWmrKe2HpSwyewqCsmKX7MFOauzgALnAF";
+	private static String PARSE_API_KEY		= "01PRrsZ0tuLhR8pyPLyNDuWQUDxhSd2Mi7YO5sHO";
+	private static String PARSE_API_SECRET 	= "fLPOE4sZWmrKe2HpSwyewqCsmKX7MFOauzgALnAF";
 	
   @Override
   public void onCreate() {

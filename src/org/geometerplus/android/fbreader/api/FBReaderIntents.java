@@ -62,5 +62,4 @@ public abstract class FBReaderIntents {
 	public static Intent internalIntent(String action) {
 		return new Intent(action).setPackage(DEFAULT_PACKAGE);
 	}
-
 }

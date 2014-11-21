@@ -10,7 +10,6 @@ import com.spsancti.booquotter.R;
 import com.spsancti.booquotter.ui.DummyActivity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -29,8 +28,8 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	ApiClientImplementation api;
 	private View Head;
 	
-	//From Service
-	@Override 
+	
+	@Override //From Service
 	public IBinder onBind(Intent intent) {
 	  return null;
 	}
@@ -91,7 +90,6 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		catch (ActivityNotFoundException e) {e.printStackTrace();}
 		catch (NullPointerException e) 		{e.printStackTrace();}
 	}
-	
 	public void postCurrentBookToTwitter(View v){
 		try {
 			String text = getTextForTitleShare();
@@ -116,8 +114,6 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	  super.onDestroy();
 	  if(Head != null) windowManager.removeView(Head);
 	  if(api  != null) api.disconnect();
-	  Booquotter.fp.setActivity(null);
-	  Booquotter.tp.setActivity(null);
 	}
 
 	
