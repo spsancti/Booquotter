@@ -29,11 +29,17 @@
     <string name="facebook_login_button">Log in with Facebook</string>
     <string name="logout_button">Log out</string>
     <string name="action_settings">Settings</string>
+    
     <string name="fbreader_package">org.geometerplus.zlibrary.ui.android</string>
     <string name="fbreader_api_exception">Interaction with FBReader failed.\nTry to restart FBReader and Booquotter.</string>
+    
+    <string name="post_now_reading_start">I\'m reading now the book \"</string>
+    <string name="post_now_reading_end">\" with Booquotter app.</string>
+    
     <string name="title_activity_startup">StartupActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_dummy">DummyActivity</string>
+    
     <string name="hello_world">Hello world!</string>
 
 </resources>

@@ -25,17 +25,16 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	String TAG = "HeadService";
 
 	private WindowManager windowManager;
-	ApiClientImplementation api;
+	private ApiClientImplementation api;
 	private View Head;
-	
+
 	
 	@Override //From Service
 	public IBinder onBind(Intent intent) {
 	  return null;
 	}
 
-	protected void makeFloatingWindow(int resourceId) {
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+	protected void showFloatingWindow(int resourceId) {
 		Head =  View.inflate(this, resourceId, null);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 												100, //spike, this can disable a built-in brightness slider which is 120dp width from left
@@ -47,22 +46,26 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		params.x = 0; params.y = 0;		    
 		windowManager.addView(Head, params);
 	}	
+	protected void hideFloatngWindow(){
+		if(Head != null) windowManager.removeView(Head);
+	}
 	
 	@Override //From Service
 	public void onCreate() {
 	  super.onCreate();
+	  windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 	  
 	  api = new ApiClientImplementation(this, this);
 	  api.connect();
-	  
-	  makeFloatingWindow(R.layout.activity_menu); 	  
 	}
 	
 
 
 	public String getTextForTitleShare(){
 		try {
-			String text = "Я сейчас читаю \"" + api.getBookTitle() + "\".";
+			String text = getBaseContext().getString(R.string.post_now_reading_start) 
+						+ api.getBookTitle() 
+						+ getBaseContext().getString(R.string.post_now_reading_end);
 			return text;
 		}
 		catch (ApiException e) {
@@ -112,8 +115,10 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	@Override //From Service
 	public void onDestroy() {
 	  super.onDestroy();
-	  if(Head != null) windowManager.removeView(Head);
-	  if(api  != null) api.disconnect();
+	  hideFloatngWindow();
+	  if(api  != null){
+		  api.disconnect();
+	  }
 	}
 
 	
@@ -125,7 +130,14 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 
 	@Override //From ApiListener
 	public void onEvent(String event) {
-		Toast.makeText(this, "Got event:" +event, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Got event: " +event, Toast.LENGTH_SHORT).show();
+			
+		if(event.equalsIgnoreCase(EVENT_READ_MODE_OPENED)){
+	         showFloatingWindow(R.layout.activity_menu);
+		}
+		else if(event.equalsIgnoreCase(EVENT_READ_MODE_CLOSED)){
+	         hideFloatngWindow();
+		} 
 		
 	}
 }
