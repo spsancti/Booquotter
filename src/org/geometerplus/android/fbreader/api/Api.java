@@ -22,12 +22,14 @@ public interface Api {
 	// book information for current book
 	String getBookLanguage() throws ApiException;
 	String getBookTitle() throws ApiException;
-	//List<String> getBookAuthors() throws ApiException;
+	List<String> getBookAuthors() throws ApiException;
 	List<String> getBookTags() throws ApiException;
 	String getBookFilePath() throws ApiException;
 	String getBookHash() throws ApiException;
 	String getBookUniqueId() throws ApiException;
 	Date getBookLastTurningTime() throws ApiException;
+	int getCurrentPage() throws ApiException;
+	int getTotalPages() throws ApiException;
 
 	// book information for book defined by id
 	String getBookLanguage(long id) throws ApiException;
@@ -38,6 +40,8 @@ public interface Api {
 	String getBookHash(long id) throws ApiException;
 	String getBookUniqueId(long id) throws ApiException;
 	Date getBookLastTurningTime(long id) throws ApiException;
+	int getCurrentPage(long id) throws ApiException;
+	int getTotalPages(long id) throws ApiException;
 
 	//long findBookIdByUniqueId(String uniqueId) throws ApiException;
 	//long findBookIdByFilePath(String uniqueId) throws ApiException;
@@ -57,7 +61,7 @@ public interface Api {
 	
 	// selection processing
 	String getSelectedText() throws ApiException;
-	void addSelectionHandler(String actionId, boolean isCloseButton, int imageId, int weight) throws ApiException;
+	void addSelectionHandler(String actionId, boolean isCloseButton, String imageUri, int weight) throws ApiException;
 
 	// manage view
 	void setPageStart(TextPosition position) throws ApiException;

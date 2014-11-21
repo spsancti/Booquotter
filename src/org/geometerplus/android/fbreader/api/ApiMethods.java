@@ -29,6 +29,8 @@ interface ApiMethods {
 	int GET_BOOK_HASH = 506;
 	int GET_BOOK_UNIQUE_ID = 507;
 	int GET_BOOK_LAST_TURNING_TIME = 508;
+	int GET_CURRENT_PAGE = 509;
+	int GET_TOTAL_PAGES = 510;
 
 	// text information
 	int GET_PARAGRAPHS_NUMBER = 601;

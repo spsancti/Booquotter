@@ -11,7 +11,6 @@ import android.content.*;
 import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.os.Parcelable;
-import android.util.Log;
 
 public class ApiClientImplementation implements ServiceConnection, Api, ApiMethods {
 	public static interface ConnectionListener {
@@ -272,6 +271,10 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return requestString(GET_BOOK_TITLE, EMPTY_PARAMETERS);
 	}
 
+	public List<String> getBookAuthors() throws ApiException {
+		return requestStringList(LIST_BOOK_AUTHORS, EMPTY_PARAMETERS);
+	}
+
 	public List<String> getBookTags() throws ApiException {
 		return requestStringList(LIST_BOOK_TAGS, EMPTY_PARAMETERS);
 	}
@@ -292,12 +295,24 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return requestDate(GET_BOOK_LAST_TURNING_TIME, EMPTY_PARAMETERS);
 	}
 
+	public int getCurrentPage() throws ApiException {
+		return requestInt(GET_CURRENT_PAGE, EMPTY_PARAMETERS);
+	}
+
+	public int getTotalPages() throws ApiException {
+		return requestInt(GET_TOTAL_PAGES, EMPTY_PARAMETERS);
+	}
+
 	public String getBookLanguage(long id) throws ApiException {
 		return requestString(GET_BOOK_LANGUAGE, envelope(id));
 	}
 
 	public String getBookTitle(long id) throws ApiException {
 		return requestString(GET_BOOK_TITLE, envelope(id));
+	}
+
+	public List<String> getBookAuthors(long id) throws ApiException {
+		return requestStringList(LIST_BOOK_AUTHORS, envelope(id));
 	}
 
 	public List<String> getBookTags(long id) throws ApiException {
@@ -318,6 +333,14 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 
 	public Date getBookLastTurningTime(long id) throws ApiException {
 		return requestDate(GET_BOOK_LAST_TURNING_TIME, envelope(id));
+	}
+
+	public int getCurrentPage(long id) throws ApiException {
+		return requestInt(GET_CURRENT_PAGE, envelope(id));
+	}
+
+	public int getTotalPages(long id) throws ApiException {
+		return requestInt(GET_TOTAL_PAGES, envelope(id));
 	}
 
 	public TextPosition getPageStart() throws ApiException {
@@ -360,10 +383,10 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 		return requestString(GET_SELECTED_TEXT, EMPTY_PARAMETERS);
 	}
 
-	public void addSelectionHandler(String actionId, boolean isCloseButton, int imageId, int weight) throws ApiException {
+	public void addSelectionHandler(String actionId, boolean isCloseButton, String imageUri, int weight) throws ApiException {
 		request(
 			ADD_SELECTION_HANDLER,
-			new ApiObject[] { ApiObject.envelope(actionId), ApiObject.envelope(isCloseButton), ApiObject.envelope(imageId), ApiObject.envelope(weight) }
+			new ApiObject[] { ApiObject.envelope(actionId), ApiObject.envelope(isCloseButton), ApiObject.envelope(imageUri), ApiObject.envelope(weight) }
 		);
 	}
 

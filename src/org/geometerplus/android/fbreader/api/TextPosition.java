@@ -5,6 +5,7 @@
 package org.geometerplus.android.fbreader.api;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 public final class TextPosition extends ApiObject {
 	public final int ParagraphIndex;
