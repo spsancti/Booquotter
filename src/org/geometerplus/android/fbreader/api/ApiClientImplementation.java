@@ -11,10 +11,12 @@ import android.content.*;
 import android.graphics.Bitmap;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class ApiClientImplementation implements ServiceConnection, Api, ApiMethods {
 	public static interface ConnectionListener {
 		void onConnected();
+		void onDisconnected();
 	}
 
 	static final String EVENT_TYPE = "event.type";
@@ -82,6 +84,9 @@ public class ApiClientImplementation implements ServiceConnection, Api, ApiMetho
 	}
 
 	public synchronized void onServiceDisconnected(ComponentName name) {
+		if (myListener != null) {
+			myListener.onDisconnected();
+		}
 		myInterface = null;
 	}
 

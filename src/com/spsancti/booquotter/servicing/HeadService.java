@@ -15,6 +15,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,7 +32,7 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	
 	@Override //From Service
 	public IBinder onBind(Intent intent) {
-	  return null;
+		return null;
 	}
 
 	protected void showFloatingWindow(int resourceId) {
@@ -45,22 +46,25 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		params.gravity = Gravity.TOP | Gravity.LEFT;
 		params.x = 0; params.y = 0;		    
 		windowManager.addView(Head, params);
+		Log.d(TAG, "Head added to window");
 	}	
+	
 	protected void hideFloatngWindow(){
-		if(Head != null) windowManager.removeView(Head);
+		if(Head != null){
+			windowManager.removeView(Head);
+			Head = null;
+		}
+		Log.d(TAG, "Head removed from window");
 	}
 	
 	@Override //From Service
 	public void onCreate() {
-	  super.onCreate();
-	  windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-	  
-	  api = new ApiClientImplementation(this, this);
-	  api.connect();
+		super.onCreate();
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		showFloatingWindow(R.layout.activity_menu);
+		api = new ApiClientImplementation(this, this);
 	}
 	
-
-
 	public String getTextForTitleShare(){
 		try {
 			String text = getBaseContext().getString(R.string.post_now_reading_start) 
@@ -112,20 +116,39 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		catch (NullPointerException e) 		{e.printStackTrace();}
 	}
 	
+	void myStopSelf(boolean needStop){
+		hideFloatngWindow();
+		if(needStop){
+			if(api != null) api.disconnect();	
+			stopSelf();			
+			Log.i(TAG, "I'm leaving you, Lord!");
+		}
+	}
+	
+	public void onClick(View v){
+		switch(v.getId()){
+			case R.id.pbTweet:  postCurrentBookToTwitter(v); break;
+			case R.id.pbFB: 	postCurrentBookToFB(v); 	 break;
+			case R.id.pbExit:	myStopSelf(true); 			 break;
+		}
+	}	
+		
 	@Override //From Service
 	public void onDestroy() {
 	  super.onDestroy();
-	  hideFloatngWindow();
-	  if(api  != null){
-		  api.disconnect();
-	  }
+	  myStopSelf(false);
 	}
-
 	
 	@Override //From ConnectionListener
 	public void onConnected() {
 		Toast.makeText(this, "Connected to FBReader", Toast.LENGTH_SHORT).show();
 		api.addListener(this);
+	}
+	
+	@Override //From ConnectionListener
+	public void onDisconnected() {
+		Toast.makeText(this, "Disconnected from FBReader", Toast.LENGTH_SHORT).show();
+		myStopSelf(true);	
 	}
 
 	@Override //From ApiListener
@@ -136,9 +159,11 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	         showFloatingWindow(R.layout.activity_menu);
 		}
 		else if(event.equalsIgnoreCase(EVENT_READ_MODE_CLOSED)){
-	         hideFloatngWindow();
+	         hideFloatngWindow();	         
 		} 
 		
 	}
+
+
 }
 

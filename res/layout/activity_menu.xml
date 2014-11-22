@@ -9,7 +9,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent">	    
 	    <!-- The navigation drawer -->
-	    <LinearLayout android:id="@+id/left_drawer"
+	    <RelativeLayout android:id="@+id/left_drawer"
 	        android:layout_marginLeft="-64dp"
 	        android:layout_marginStart="-64dp"
 	        android:orientation="vertical"
@@ -24,20 +24,31 @@
 				<Button
 				    android:id="@+id/pbTweet"
 				    style="?android:attr/buttonStyleSmall"
+				    
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
-				    android:onClick="postCurrentBookToTwitter"				    
+				    android:onClick="onClick"				    
 				    android:text="Tweet" />
 			
 				<Button
 				    android:id="@+id/pbFB"
 				    style="?android:attr/buttonStyleSmall"
+				    android:layout_below="@+id/pbTweet"
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
-				    android:onClick="postCurrentBookToFB"
+				    android:onClick="onClick"
 				    android:text="Post to FB" />  
+				    
+				<Button
+				    android:id="@+id/pbExit"
+				    style="?android:attr/buttonStyleSmall"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_alignParentBottom="true"
+				    android:onClick="onClick"
+				    android:text="Exit" />  
 				          
-	    </LinearLayout>
+	    </RelativeLayout>
 	</android.support.v4.widget.DrawerLayout>
 
 
