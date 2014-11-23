@@ -143,6 +143,12 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	public void onConnected() {
 		Toast.makeText(this, "Connected to FBReader", Toast.LENGTH_SHORT).show();
 		api.addListener(this);
+		try {
+			api.addSelectionHandler("@postFacebook",false,"com.spsancti.booquotter:drawable/facebook",800);
+			api.addSelectionHandler("@postTwitter",false,"com.spsancti.booquotter:drawable/twitter",801);
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override //From ConnectionListener
