@@ -1,5 +1,7 @@
 package com.spsancti.booquotter.servicing;
 
+import java.util.List;
+
 import org.geometerplus.android.fbreader.api.ApiClientImplementation;
 import org.geometerplus.android.fbreader.api.ApiClientImplementation.ConnectionListener;
 import org.geometerplus.android.fbreader.api.ApiException;
@@ -24,7 +26,10 @@ import android.widget.Toast;
 @SuppressLint("RtlHardcoded")
 public class HeadService extends Service implements ConnectionListener, ApiListener{
 	String TAG = "HeadService";
-
+	
+	static final String EVENT_POST_TWITTER = "event.type.post.twitter"; 
+	static final String EVENT_POST_FACEBOOK = "event.type.post.facebook";
+	
 	private WindowManager windowManager;
 	private ApiClientImplementation api;
 	private View Head;
@@ -34,7 +39,27 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
-
+	@Override //From Service
+	public void onCreate() {
+		super.onCreate();
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		showFloatingWindow(R.layout.activity_menu);
+		api = new ApiClientImplementation(this, this);
+	}
+	public void myStopSelf(boolean needStop){
+		hideFloatngWindow();
+		if(needStop){
+			if(api != null) api.disconnect();	
+			stopSelf();			
+			Log.i(TAG, "I'm leaving you, Lord!");
+		}
+	}
+	@Override //From Service
+	public void onDestroy() {
+	  super.onDestroy();
+	  myStopSelf(false);
+	}
+	
 	protected void showFloatingWindow(int resourceId) {
 		Head =  View.inflate(this, resourceId, null);
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams(
@@ -48,7 +73,6 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		windowManager.addView(Head, params);
 		Log.d(TAG, "Head added to window");
 	}	
-	
 	protected void hideFloatngWindow(){
 		if(Head != null){
 			windowManager.removeView(Head);
@@ -57,20 +81,11 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		Log.d(TAG, "Head removed from window");
 	}
 	
-	@Override //From Service
-	public void onCreate() {
-		super.onCreate();
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-		showFloatingWindow(R.layout.activity_menu);
-		api = new ApiClientImplementation(this, this);
-	}
-	
-	public String getTextForTitleShare(){
+	protected String constructTitleShare(){
 		try {
-			String text = getBaseContext().getString(R.string.post_now_reading_start) 
-						+ api.getBookTitle() 
-						+ getBaseContext().getString(R.string.post_now_reading_end);
-			return text;
+			return  getBaseContext().getString(R.string.post_now_reading_start) 
+					+ api.getBookTitle() 
+					+ getBaseContext().getString(R.string.post_now_reading_end);			
 		}
 		catch (ApiException e) {
 			e.printStackTrace();
@@ -79,10 +94,16 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 			return null;
 		}		
 	}
+	protected String constructQuote(String text, List<String> authors){
+		if(!authors.isEmpty()){
+			if(!text.endsWith("."))	text += ".";
+			text += " - " + authors.get(0).replaceAll("\\((.*?)\\)|(|)", "") + ".";
+		}
+		return text;
+	}
 	
-	public void postCurrentBookToFB(View v){
-		try {
-			String text = getTextForTitleShare();
+	public void postToFB(String text){
+		try {			
 			if(!Booquotter.fp.isLoggedIn()){
 				Intent i = new Intent(this, DummyActivity.class);
 				i.putExtra("Facebook", text);
@@ -97,9 +118,8 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		catch (ActivityNotFoundException e) {e.printStackTrace();}
 		catch (NullPointerException e) 		{e.printStackTrace();}
 	}
-	public void postCurrentBookToTwitter(View v){
+	public void postToTwitter(String text){
 		try {
-			String text = getTextForTitleShare();
 			if(!Booquotter.tp.isLoggedIn()){
 				Intent i = new Intent(this, DummyActivity.class);
 				i.putExtra("Twitter", text);
@@ -116,35 +136,34 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		catch (NullPointerException e) 		{e.printStackTrace();}
 	}
 	
-	void myStopSelf(boolean needStop){
-		hideFloatngWindow();
-		if(needStop){
-			if(api != null) api.disconnect();	
-			stopSelf();			
-			Log.i(TAG, "I'm leaving you, Lord!");
-		}
-	}
-	
 	public void onClick(View v){
 		switch(v.getId()){
-			case R.id.pbTweet:  postCurrentBookToTwitter(v); break;
-			case R.id.pbFB: 	postCurrentBookToFB(v); 	 break;
-			case R.id.pbExit:	myStopSelf(true); 			 break;
+			case R.id.pbTweet:{
+				postToTwitter(constructTitleShare());break;
+			}
+			case R.id.pbFB:{
+				postToFB(constructTitleShare()); 	  break;
+			}
+			case R.id.pbExit:	myStopSelf(true); 	  break;
+			default:{
+				Toast.makeText(this, "Got view:" + String.valueOf(v.getId()) + "\nFinishing...", Toast.LENGTH_LONG).show();
+				myStopSelf(true);
+			}
 		}
 	}	
-		
-	@Override //From Service
-	public void onDestroy() {
-	  super.onDestroy();
-	  myStopSelf(false);
-	}
-	
+			
 	@Override //From ConnectionListener
 	public void onConnected() {
 		Toast.makeText(this, "Connected to FBReader", Toast.LENGTH_SHORT).show();
-		api.addListener(this);
+		api.addListener(this);		
+		try {	
+			api.addSelectionHandler("@"+EVENT_POST_TWITTER,  false, getPackageName()+":drawable/twitter", 0);
+			api.addSelectionHandler("@"+EVENT_POST_FACEBOOK, false, getPackageName()+":drawable/facebook", 1);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			myStopSelf(true);
+		}
 	}
-	
 	@Override //From ConnectionListener
 	public void onDisconnected() {
 		Toast.makeText(this, "Disconnected from FBReader", Toast.LENGTH_SHORT).show();
@@ -153,17 +172,21 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 
 	@Override //From ApiListener
 	public void onEvent(String event) {
-		Toast.makeText(this, "Got event: " +event, Toast.LENGTH_SHORT).show();
-			
-		if(event.equalsIgnoreCase(EVENT_READ_MODE_OPENED)){
-	         showFloatingWindow(R.layout.activity_menu);
-		}
-		else if(event.equalsIgnoreCase(EVENT_READ_MODE_CLOSED)){
-	         hideFloatngWindow();	         
-		} 
-		
+		Toast.makeText(this, "Got event: " + event, Toast.LENGTH_SHORT).show();
+		try{	
+			if(event.equalsIgnoreCase(EVENT_READ_MODE_OPENED)){
+		         showFloatingWindow(R.layout.activity_menu);
+			}
+			else if(event.equalsIgnoreCase(EVENT_READ_MODE_CLOSED)){
+		         hideFloatngWindow();	         
+			}
+			else if(event.equalsIgnoreCase(EVENT_POST_TWITTER)){
+				postToTwitter(constructQuote(api.getSelectedText(), api.getBookAuthors()));
+			}
+			else if(event.equalsIgnoreCase(EVENT_POST_FACEBOOK)){
+				postToFB(constructQuote(api.getSelectedText(), api.getBookAuthors()));
+			}
+		} catch(ApiException aex){aex.printStackTrace();}
 	}
-
-
 }
 
