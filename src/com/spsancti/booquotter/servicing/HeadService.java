@@ -33,12 +33,11 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	private WindowManager windowManager;
 	private ApiClientImplementation api;
 	private View Head;
-
 	
 	@Override //From Service
 	public IBinder onBind(Intent intent) {
 		return null;
-	}
+	}	
 	@Override //From Service
 	public void onCreate() {
 		super.onCreate();
@@ -46,6 +45,12 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		showFloatingWindow(R.layout.activity_menu);
 		api = new ApiClientImplementation(this, this);
 	}
+	@Override //From Service
+	public void onDestroy() {
+	  super.onDestroy();
+	  myStopSelf(false);
+	}
+
 	public void myStopSelf(boolean needStop){
 		hideFloatngWindow();
 		if(needStop){
@@ -53,11 +58,6 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 			stopSelf();			
 			Log.i(TAG, "I'm leaving you, Lord!");
 		}
-	}
-	@Override //From Service
-	public void onDestroy() {
-	  super.onDestroy();
-	  myStopSelf(false);
 	}
 	
 	protected void showFloatingWindow(int resourceId) {
@@ -97,7 +97,7 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	protected String constructQuote(String text, List<String> authors){
 		if(!authors.isEmpty()){
 			if(!text.endsWith("."))	text += ".";
-			text += " - " + authors.get(0).replaceAll("\\((.*?)\\)|(|)", "") + ".";
+			text += " - " + authors.get(0).replaceAll("\\((.*?)\\)|[ (]|)", "");
 		}
 		return text;
 	}
@@ -142,9 +142,11 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 				postToTwitter(constructTitleShare());break;
 			}
 			case R.id.pbFB:{
-				postToFB(constructTitleShare()); 	  break;
+				postToFB(constructTitleShare()); 	 break;
 			}
-			case R.id.pbExit:	myStopSelf(true); 	  break;
+			case R.id.pbExit:{
+				myStopSelf(true); 	 				 break;
+			}
 			default:{
 				Toast.makeText(this, "Got view:" + String.valueOf(v.getId()) + "\nFinishing...", Toast.LENGTH_LONG).show();
 				myStopSelf(true);

@@ -17,8 +17,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import android.app.Activity;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.AsyncTask;
