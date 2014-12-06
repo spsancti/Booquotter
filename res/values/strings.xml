@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name="app_plugin_name">FBReader plugin Booquotter, version 0.1 alpha</string>
+	<string name="app_plugin_copyright_year">Copyright © 2014</string>
+	<string name="app_plugin_copyright_person">Borys Tymchenko, Bogdan Horbeshko</string>
+	<string name="app_plugin_view_help">View help</string>
     <string name="app_name">Booquotter</string>
     <string name="app_post_facebook">Post to FB</string>
     <string name="app_post_twitter">Tweet</string>
+    
     <string name="twitter_login_cancelled">Twitter login unsuccessful</string>
     <string name="twitter_logged_out">Logged out from Twitter</string>
     <string name="twitter_not_logged_out">Unfortunately, cannot log out from Twitter</string>
@@ -30,16 +34,16 @@
     <string name="logout_button">Log out</string>
     <string name="action_settings">Settings</string>
     
+    <string name="fbreader_button_launch">Launch FBReader</string>
     <string name="fbreader_package">org.geometerplus.zlibrary.ui.android</string>
     <string name="fbreader_api_exception">Interaction with FBReader failed.\nTry to restart FBReader and Booquotter.</string>
     
     <string name="post_now_reading_start">I\'m reading now the book \"</string>
     <string name="post_now_reading_end">\" with Booquotter app.</string>
     
-    <string name="title_activity_startup">StartupActivity</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="title_activity_dummy">DummyActivity</string>
-    
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_startup">Booquotter 0.1 alpha</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_dummy"></string>
+
 
 </resources>
