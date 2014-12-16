@@ -16,7 +16,7 @@
         android:name=".Booquotter"
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/booquotter"
         android:label="@string/app_name" >
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

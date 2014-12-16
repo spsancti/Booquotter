@@ -21,32 +21,32 @@
 	        android:background="#111">
 	        
 	        <!-- Put your buttons here -->
-				<Button
+				<ImageButton
 				    android:id="@+id/pbTweet"
 				    style="?android:attr/buttonStyleSmall"
 				    
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
 				    android:onClick="onClick"	
-  				    android:text="Tweet" />
+  				    android:src="@drawable/facebook" />
 			
-				<Button
+				<ImageButton
 				    android:id="@+id/pbFB"
 				    style="?android:attr/buttonStyleSmall"
 				    android:layout_below="@+id/pbTweet"
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
 				    android:onClick="onClick"
-				    android:text="Post to FB" />  
+				    android:src="@drawable/twitter" />  
 				    
-				<Button
+				<ImageButton
 				    android:id="@+id/pbExit"
 				    style="?android:attr/buttonStyleSmall"
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
 				    android:layout_alignParentBottom="true"
 				    android:onClick="onClick"
-				    android:text="Exit" />  
+				    android:src="@drawable/exit" />  
 				          
 	    </RelativeLayout>
 	</android.support.v4.widget.DrawerLayout>
