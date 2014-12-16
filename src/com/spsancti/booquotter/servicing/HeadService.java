@@ -159,8 +159,13 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 		Toast.makeText(this, "Connected to FBReader", Toast.LENGTH_SHORT).show();
 		api.addListener(this);		
 		try {	
-			api.addSelectionHandler("@"+EVENT_POST_TWITTER,  false, getPackageName()+":drawable/twitter", 0);
-			api.addSelectionHandler("@"+EVENT_POST_FACEBOOK, false, getPackageName()+":drawable/facebook", 1);
+			api.addSelectionHandler("@"+EVENT_POST_TWITTER,  false, getPackageName()+":drawable/twitter_quote", 0);
+			api.addSelectionHandler("@"+EVENT_POST_FACEBOOK, false, getPackageName()+":drawable/facebook_quote", 1);
+			api.addSelectionHandler("selectionCopyToClipboard", false, getPackageName()+":drawable/copy", 2);
+			api.addSelectionHandler("selectionShare", false, getPackageName()+":drawable/share", 3);
+			api.addSelectionHandler("selectionTranslate", false, getPackageName()+":drawable/dictionary", 4);
+			api.addSelectionHandler("selectionBookmark", false, getPackageName()+":drawable/bookmark", 5);
+			api.addSelectionHandler("selectionClear", false, getPackageName()+":drawable/remove", 6);
 		} catch (ApiException e) {
 			e.printStackTrace();
 			myStopSelf(true);
