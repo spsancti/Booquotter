@@ -97,7 +97,7 @@ public class HeadService extends Service implements ConnectionListener, ApiListe
 	protected String constructQuote(String text, List<String> authors){
 		if(!authors.isEmpty()){
 			if(!text.endsWith("."))	text += ".";
-			text += " - " + authors.get(0).replaceAll("\\((.*?)\\)|[ (]|)", "");
+			text += " - " + authors.get(0).replaceAll("\\((.*?)\\)|[ (]|[)]", "");
 		}
 		return text;
 	}
